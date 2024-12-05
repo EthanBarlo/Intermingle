@@ -2,9 +2,9 @@
 
 namespace EthanBarlo\Intermingle\Tests;
 
+use EthanBarlo\Intermingle\IntermingleServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use EthanBarlo\Intermingle\IntermingleServiceProvider;
 
 class TestCase extends Orchestra
 {

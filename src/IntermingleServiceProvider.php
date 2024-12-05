@@ -2,9 +2,9 @@
 
 namespace EthanBarlo\Intermingle;
 
+use EthanBarlo\Intermingle\Commands\IntermingleCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use EthanBarlo\Intermingle\Commands\IntermingleCommand;
 
 class IntermingleServiceProvider extends PackageServiceProvider
 {
