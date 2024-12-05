@@ -1,0 +1,30 @@
+{
+  "name": "intermingle",
+  "version": "0.1.0",
+  "description": "Deeply integrate React with Livewire",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EthanBarlo/Intermingle.git"
+  },
+  "author": "Ethan Barlow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EthanBarlo/Intermingle/issues"
+  },
+  "homepage": "https://github.com/EthanBarlo/Intermingle#readme",
+  "dependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.2"
+  }
+}
