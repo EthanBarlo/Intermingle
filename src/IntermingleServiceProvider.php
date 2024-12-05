@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace EthanBarlo\Intermingle;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use EthanBarlo\Intermingle\Commands\IntermingleCommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class IntermingleServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
+            ->name('intermingle')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_migration_table_name_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->hasMigration('create_intermingle_table')
+            ->hasCommand(IntermingleCommand::class);
     }
 }
