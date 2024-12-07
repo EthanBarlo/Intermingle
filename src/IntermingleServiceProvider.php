@@ -19,7 +19,6 @@ class IntermingleServiceProvider extends PackageServiceProvider
             ->name('intermingle')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_intermingle_table')
             ->hasCommand(IntermingleCommand::class);
     }
 }
