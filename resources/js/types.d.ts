@@ -57,7 +57,7 @@ interface Window {
 
 type RenderedComponent = {
     componentName: string;
-    updateProps: (props: any) => void;
+    updateProps: (livewireComponent: LivewireComponent, props: any) => void;
     cleanup: CleanupCallback;
 }
 

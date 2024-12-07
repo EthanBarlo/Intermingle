@@ -15,7 +15,7 @@ export default {
         
         // Creating a function here to allow us to update the props
         // While maintaining the same root element thus maintaining any state
-        const renderComponent = (props: any) => {
+        const renderComponent = (livewireComponent: LivewireComponent, props: any) => {
             root.render(
                 <LivewireContext.Provider value={livewireComponent}>
                     <IntermingleComponent {...props} />
@@ -23,7 +23,7 @@ export default {
             );
         }
 
-        renderComponent(props);
+        renderComponent(livewireComponent, props);
 
         return {
             componentName,

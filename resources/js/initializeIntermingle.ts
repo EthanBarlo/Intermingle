@@ -22,7 +22,7 @@ export default function initializeIntermingle(Livewire:any, renderers: Interming
             setRenderedComponent(component.id, renderedComponent);
             cleanup(() => renderedComponent.cleanup());
         } catch (e) {
-            console.error("Error rendering intermingle component", e)
+            throw new Error("Error rendering intermingle component: " + e)
         }
     });
 
@@ -32,7 +32,7 @@ export default function initializeIntermingle(Livewire:any, renderers: Interming
         try {
             const intermingleRenderedComponent = getRenderedComponent(component.id);
             let props = getProps(component.el);
-            intermingleRenderedComponent.updateProps(props);
+            intermingleRenderedComponent.updateProps(component, props);
         } catch (e) {
             return; // Not an intermingle rendered component
         }

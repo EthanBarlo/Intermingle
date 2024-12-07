@@ -4,12 +4,10 @@ export default function renderIntermingleComponent(livewireComponent: LivewireCo
     if(!window.Intermingle){
         throw new Error("Intermingle is not initialized")
     }
-    
+
     const intermingleComponent = getComponent(intermingleComponentName);
     const props = getProps(livewireComponent.el);
-    const intermingleRenderer = getRenderer(intermingleComponent.type);
+    const renderComponent = getRenderer(intermingleComponent.type);
 
-    const renderedComponent = intermingleRenderer(intermingleComponentName, livewireComponent, intermingleComponent.component, props);
-
-    return renderedComponent;
+    return renderComponent(intermingleComponentName, livewireComponent, intermingleComponent.component, props);
 }
