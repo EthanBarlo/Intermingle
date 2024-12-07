@@ -1,10 +1,9 @@
 export default function registerIntermingle(type: string, name: string, component: any) {
-    if(!window.Intermingle || !window.Intermingle.initialized){
-        console.error("Intermingle is not initialized")
-        return;
+    if(!window.IntermingleComponents){
+        window.IntermingleComponents = {}
     }
 
-    window.Intermingle.components[name] = {
+    window.IntermingleComponents[name] = {
         type,
         component
     };

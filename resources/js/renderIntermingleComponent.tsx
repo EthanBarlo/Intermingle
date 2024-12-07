@@ -1,33 +1,15 @@
-export default function renderIntermingleComponent(livewireComponent: LivewireComponent, intermingleComponentName: string): CleanupCallback {
+import { getComponent, getProps, getRenderer } from "./utils";
 
-    if(!window.Intermingle || !window.Intermingle.initialized){
-        console.error("Intermingle is not initialized")
-        return () => {};
+export default function renderIntermingleComponent(livewireComponent: LivewireComponent, intermingleComponentName: string): RenderedComponent {
+    if(!window.Intermingle){
+        throw new Error("Intermingle is not initialized")
     }
+    
+    const intermingleComponent = getComponent(intermingleComponentName);
+    const props = getProps(livewireComponent.el);
+    const intermingleRenderer = getRenderer(intermingleComponent.type);
 
-    const intermingleComponent = window.Intermingle.components[intermingleComponentName]
-        
-    if (!intermingleComponent) {
-        console.error(`Intermingle component "${intermingleComponentName}" not found`)
-        return () => {};
-    }
+    const renderedComponent = intermingleRenderer(intermingleComponentName, livewireComponent, intermingleComponent.component, props);
 
-    let props = {}
-    const propsAttr = livewireComponent.el.getAttribute('x-intermingle-props')
-    if (propsAttr) {
-        try {
-            props = JSON.parse(propsAttr)
-        } catch (e) {
-            console.error('Failed to parse x-intermingle-props:', e)
-        }
-    }
-
-    const intermingleRenderer = window.Intermingle.renderers[intermingleComponent.type];
-
-    if(!intermingleRenderer){
-        console.error(`Intermingle renderer for "${intermingleComponent.type}" not found`)
-        return () => {};
-    }
-
-    return intermingleRenderer(livewireComponent, intermingleComponent.component, props)
+    return renderedComponent;
 }

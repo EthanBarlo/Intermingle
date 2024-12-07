@@ -2,18 +2,35 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import LivewireContext from "./contexts/LivewireContext";
 
-
 export default {
     type: "react",
-    renderComponent: (livewireComponent, IntermingleComponent, props) => {
-        const root = createRoot(livewireComponent.el)
-        
-        root.render(
-            <LivewireContext value={livewireComponent}>
-                <IntermingleComponent {...props} />
-            </LivewireContext>
-        );
+    renderComponent: (componentName, livewireComponent, IntermingleComponent, props) => {
+        const root_element = livewireComponent.el.querySelector(".intermingle-root")
 
-        return () => root.unmount();
+        if(!root_element){
+            throw new Error("Intermingle root element not found")
+        }
+
+        const root = createRoot(root_element)
+        
+        // Creating a function here to allow us to update the props
+        // While maintaining the same root element thus maintaining any state
+        const renderComponent = (props: any) => {
+            root.render(
+                <LivewireContext.Provider value={livewireComponent}>
+                    <IntermingleComponent {...props} />
+                </LivewireContext.Provider>
+            );
+        }
+
+        renderComponent(props);
+
+        return {
+            componentName,
+            updateProps: renderComponent,
+            cleanup: () => {
+                root.unmount()
+            }
+        }
     }
 } as IntermingleRenderer;

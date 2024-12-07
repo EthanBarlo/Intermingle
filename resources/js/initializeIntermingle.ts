@@ -1,22 +1,42 @@
 import renderIntermingleComponent from "./renderIntermingleComponent";
+import { getComponentName, getProps, getRenderedComponent, setRenderedComponent } from "./utils";
 
 export default function initializeIntermingle(Livewire:any, renderers: IntermingleRenderer[]){
+    window.Intermingle = {
+        components: {},
+        renderers: initializeRenderers(renderers),
+        renderedComponents: {}
+    }
+
+
+    // Allows us to render an intermingle component utilizing livewires lifecycle
     Livewire.hook('component.init', ({ component, cleanup }) => {
-        const intermingleComponentName = component.el.getAttribute('x-intermingle')
+        const intermingleComponentName = getComponentName(component.el)
         
-        if (intermingleComponentName === null) {
+        if (intermingleComponentName === null || intermingleComponentName === undefined) {
             return; // Not an intermingle component
         }
 
-        const cleanupComponent = renderIntermingleComponent(component, intermingleComponentName);
-        cleanup(() => cleanupComponent());
+        try{
+            const renderedComponent = renderIntermingleComponent(component, intermingleComponentName);
+            setRenderedComponent(component.id, renderedComponent);
+            cleanup(() => renderedComponent.cleanup());
+        } catch (e) {
+            console.error("Error rendering intermingle component", e)
+        }
     });
 
-    window.Intermingle = {
-        initialized: true,
-        components: {},
-        renderers: initializeRenderers(renderers)
-    }
+    // Allows us to update the props of a rendered component
+    // Making the component reactive to livewire changes after its initial render
+    Livewire.hook('morph.updated', ({ el, component }) => {
+        try {
+            const intermingleRenderedComponent = getRenderedComponent(component.id);
+            let props = getProps(component.el);
+            intermingleRenderedComponent.updateProps(props);
+        } catch (e) {
+            return; // Not an intermingle rendered component
+        }
+    })
 }
 
 function initializeRenderers(renderers: IntermingleRenderer[]){
