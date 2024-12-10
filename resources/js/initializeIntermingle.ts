@@ -1,16 +1,26 @@
 import renderIntermingleComponent from "./renderIntermingleComponent";
 import { getComponentName, getProps, getRenderedComponent, setRenderedComponent } from "./utils";
 
-export default function initializeIntermingle(Livewire:any, renderers: IntermingleRenderer[]){
+
+export default async function initializeIntermingle(Livewire: any, config: Config){
+    const { 
+        renderers, 
+        renderAttempts = 1, 
+        renderDelay = 0
+    } = config;
+
     window.Intermingle = {
         components: {},
-        renderers: initializeRenderers(renderers),
-        renderedComponents: {}
+        renderedComponents: {},
+        config: {
+            renderers: initializeRenderers(renderers),
+            renderAttempts,
+            renderDelay
+        }
     }
 
-
     // Allows us to render an intermingle component utilizing livewires lifecycle
-    Livewire.hook('component.init', ({ component, cleanup }) => {
+    Livewire.hook('component.init', async ({ component, cleanup }) => {
         const intermingleComponentName = getComponentName(component.el)
         
         if (intermingleComponentName === null || intermingleComponentName === undefined) {
@@ -18,7 +28,7 @@ export default function initializeIntermingle(Livewire:any, renderers: Interming
         }
 
         try{
-            const renderedComponent = renderIntermingleComponent(component, intermingleComponentName);
+            const renderedComponent = await renderIntermingleComponent(component, intermingleComponentName);
             setRenderedComponent(component.id, renderedComponent);
             cleanup(() => renderedComponent.cleanup());
         } catch (e) {
@@ -39,7 +49,7 @@ export default function initializeIntermingle(Livewire:any, renderers: Interming
     })
 }
 
-function initializeRenderers(renderers: IntermingleRenderer[]){
+function initializeRenderers(renderers: IntermingleRenderer[]): {[key: string]: RenderFunction}{
     const renderersMap = {};
     renderers.forEach((renderer) => {
         renderersMap[renderer.type] = renderer.renderComponent;

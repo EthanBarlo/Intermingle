@@ -15,7 +15,7 @@ export function getProps(el: HTMLElement){
 }
 
 export function getComponent(name: string){
-    const component = window.IntermingleComponents?.[name];
+    const component = window.Intermingle?.components[name];
     if(!component){
         throw new Error(`Intermingle component "${name}" not found`)
     }
@@ -38,7 +38,7 @@ export function getRenderedComponent(livewire_id: string){
 }
 
 export function getRenderer(type: string){
-    const renderer = window.Intermingle?.renderers[type];
+    const renderer = window.Intermingle?.config.renderers[type];
     if(!renderer){
         throw new Error(`Intermingle renderer for "${type}" not found`)
     }

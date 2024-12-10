@@ -45,14 +45,21 @@ type Wire = {
 interface Window {
     Intermingle: {
         components: ComponentsMap;
-        renderers: {
-            [key: string]: RenderFunction
-        };
         renderedComponents: {
             [key: string]: RenderedComponent
         };
+        config: Omit<Config, 'renderers'> & {
+            renderers: {
+                [key: string]: RenderFunction
+            };
+        }
     } | undefined;
-    IntermingleComponents: ComponentsMap | null;
+}
+
+type Config = {
+    renderers: IntermingleRenderer[];
+    renderAttempts: number;
+    renderDelay: number;
 }
 
 type RenderedComponent = {
