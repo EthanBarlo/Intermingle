@@ -6,7 +6,7 @@ import { getComponent, getProps, getRenderer } from "./utils";
  *  If needed we could add a delay, and increase the number of attempts.
  */
 
-export default async function renderIntermingleComponent(livewireComponent: LivewireComponent, intermingleComponentName: string, attempt: number = 0): Promise<RenderedComponent> {
+export default async function renderIntermingleComponent(livewireComponent: LivewireComponent, componentName: string, attempt: number = 0): Promise<RenderedComponent> {
     if(!window.Intermingle){
         throw new Error("Intermingle is not initialized")
     }
@@ -14,15 +14,15 @@ export default async function renderIntermingleComponent(livewireComponent: Live
     const { renderAttempts, renderDelay } = window.Intermingle.config;
 
     try{
-        const intermingleComponent = getComponent(intermingleComponentName);
-        const props = getProps(livewireComponent.el);
-        const renderComponent = getRenderer(intermingleComponent.type);
+        const { type, component } = getComponent(componentName);
+        const renderComponent = getRenderer(type);
 
-        return renderComponent(intermingleComponentName, livewireComponent, intermingleComponent.component, props);
+        const props = getProps(livewireComponent.el);
+        return renderComponent(componentName, livewireComponent, component, props);
     } catch (e){
         if(attempt < renderAttempts){
             await new Promise(resolve => setTimeout(resolve, renderDelay));
-            return renderIntermingleComponent(livewireComponent, intermingleComponentName, attempt + 1);
+            return renderIntermingleComponent(livewireComponent, componentName, attempt + 1);
         }
         throw new Error("Error rendering intermingle component after " + attempt + " attempts: " + e)
     }
