@@ -1,17 +1,15 @@
-import React from 'react';
-import { useLivewire } from './contexts/LivewireContext';
+import React from "react";
+import { useWire } from "./contexts/LivewireContext";
 
-interface IComponent{
-    
-}
+interface IComponent {}
 const Component: React.FC<IComponent> = ({}) => {
-    const { $wire } = useLivewire();
+    const $wire = useWire();
 
     return (
         <div>
             <h1>Intermingle Template</h1>
         </div>
-    )
+    );
 };
 
 export default Component;

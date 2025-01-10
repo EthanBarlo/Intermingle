@@ -21,7 +21,7 @@ type LivewireComponent = {
     shapshotEncoded: string;
 }
 
-type Wire = {
+export type Wire = {
     $parent: Wire | null;
     $el: HTMLElement;
     $id: string;

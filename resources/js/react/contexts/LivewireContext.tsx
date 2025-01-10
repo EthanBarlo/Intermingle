@@ -4,21 +4,21 @@ const LivewireContext = createContext<LivewireComponent | null>(null);
 
 export default LivewireContext;
 
-export const useLivewire = () => {
+export function useLivewireComponent() {
     const livewire = useContext(LivewireContext);
-    if(!livewire){
+    if (!livewire) {
         throw new Error("useLivewire must be used within the LivewireContext");
     }
-    
-    return livewire;
-}; 
 
-export const useWire = () => {
-    const livewire = useLivewire();
-    return livewire.$wire;
+    return livewire;
 }
 
-export const useEntangle = (key: string, live: boolean = false) => {
+export function useWire<T>() {
+    const { $wire } = useLivewireComponent();
+    return $wire as Wire & T;
+}
+
+export function useEntangle(key: string, live: boolean = false) {
     const wire = useWire();
 
     const [value, setValue] = useState(wire.$get(key));
@@ -28,12 +28,12 @@ export const useEntangle = (key: string, live: boolean = false) => {
         wire.$watch(key, (value) => {
             setValue(value);
         });
-    },[wire, key]);
+    }, [wire, key]);
 
     // Update the livewire property when our react state changes
     useEffect(() => {
         wire.$set(key, value, live);
-    },[value]);
+    }, [value]);
 
     return [value, setValue];
 }

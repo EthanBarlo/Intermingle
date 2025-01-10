@@ -1,11 +1,16 @@
 <?php
 
-namespace EthanBarlo\Intermingle\Concerns;
+namespace EthanBarlo\Intermingle;
 
 use Illuminate\Support\Facades\Vite;
+use Livewire\Component as LivewireComponent;
 
-trait InteractsWithIntermingles
+abstract class Component extends LivewireComponent
 {
+    abstract public function component(): string;
+
+    abstract public function props(): array;
+
     public function render()
     {
         return view('intermingle::livewire.component');
