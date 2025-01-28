@@ -5,15 +5,16 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ethanbarlo/intermingle/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ethanbarlo/intermingle/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/ethanbarlo/intermingle.svg?style=flat-square)](https://packagist.org/packages/ethanbarlo/intermingle)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Intermingle is a powerful package that enables seamless integration of React components within Laravel Livewire applications. Inspired by [MingleJS](https://github.com/ijpatricio/mingle), Intermingle takes the concept further by building directly into Livewire's core functionality rather than relying on AlpineJS as an intermediary.
 
-## Support us
+## Key Features
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/Intermingle.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/Intermingle)
+- **Native Livewire Integration**: Built directly on top of Livewire's hooks system for better performance and reliability
+- **Reactive Props**: React components automatically update when Livewire properties change
+- **Two-way Data Binding**: Use the `useEntangle` hook to create bidirectional bindings between React state and Livewire properties
+- **Live/Deferred Updates**: Choose between live or deferred updates when using entangled properties
+- **Direct Wire Access**: Access Livewire methods and properties directly through the `useWire` hook
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
 ## Installation
 
@@ -23,44 +24,115 @@ You can install the package via composer:
 composer require ethanbarlo/intermingle
 ```
 
-You can publish and run the migrations with:
 
-```bash
-php artisan vendor:publish --tag="intermingle-migrations"
-php artisan migrate
-```
+## Example Usage: React-Controlled Inputs
 
-You can publish the config file with:
+Intermingle allows you to create React components that can be used as Livewire form inputs using `wire:model`. Here's how to create a custom React Select component that integrates seamlessly with Livewire:
 
-```bash
-php artisan vendor:publish --tag="intermingle-config"
-```
-
-This is the contents of the published config file:
-
+1. Generic Livewire Controlled Page
+`Controller`
 ```php
-return [
-];
+use Livewire\Component;
+
+class UserProfile extends Component
+{
+    public ?string $country = null;
+
+    public function save()
+    {
+        $this->validate([
+            'country' => 'required|string'
+        ]);
+    }
+
+    public function countries(): array
+    {
+        return [
+            ['value' => 'us', 'label' => 'United States'],
+            ['value' => 'uk', 'label' => 'United Kingdom'],
+            ['value' => 'ca', 'label' => 'Canada'],
+        ];
+    }
+
+    public function render()
+    {
+        return view('livewire.user-profile');
+    }
+}
 ```
 
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="intermingle-views"
+`View`
+```blade
+<div>
+    <form wire:submit.prevent="save">
+        <div>
+            <label>Select your country:</label>
+            <livewire:react-select wire:model="country" :options="$this->countries()" />
+            @error('country')
+                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+            @enderror
+        </div>
+        <button type="submit">Save</button>
+    </form>
+</div>
 ```
+* One thing to note, is that you can use either 'wire:model' or 'wire:model.live'. Without needing to make any changes to the Intermingle component.
 
-## Usage
 
+2. The Intermingle / React component
+
+`Controller`
 ```php
-$intermingle = new EthanBarlo\Intermingle();
-echo $intermingle->echoPhrase('Hello, EthanBarlo!');
+use EthanBarlo\Intermingle\Component;
+use Livewire\Attributes\Modelable;
+
+class ReactSelect extends Component
+{
+    #[Modelable]
+    public string $value = '';
+
+    public function __construct(
+        public array $options
+    ) {}
+
+    public function component(): string
+    {
+        return 'resources/js/components/ReactSelect/index.ts';
+    }
+
+    public function props(): array
+    {
+        return [
+            'options' => $this->options,
+        ];
+    }
+}
 ```
 
-## Testing
+`View`
+```tsx
+import { useEntangle } from '@intermingle/react/contexts/LivewireContext';
+import Select, { type SelectOption } from 'custom-select-component'; // Example
 
-```bash
-composer test
+interface IReactSelect{
+    options: SelectOption[];
+}
+const ReactSelect: React.FC<IReactSelect> = ({ options }) => {
+    const [value, setValue] = useEntangle<string>('value');
+
+    return (
+        <Select value={value} onChange={setValue} options={options} />
+    );
+}
 ```
+
+This example demonstrates how Intermingle enables you to:
+- Use React components as form inputs with `wire:model`
+- Handle two-way data binding between React and Livewire
+- Create reusable React components that work seamlessly within Livewire forms
+- Maintain a reactive connection between your React state and Livewire properties
+
+
 
 ## Changelog
 
@@ -69,6 +141,12 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Testing
+
+```bash
+composer test
+```
 
 ## Security Vulnerabilities
 

@@ -44,7 +44,14 @@ export default async function initializeIntermingle(
         try {
             const rendered = getRenderedComponent(component.id);
             let props = getProps(component.el);
+
+            // Return if props have not changed
+            if(JSON.stringify(props) ===  JSON.stringify(rendered.props)){
+                return;
+            }
+
             rendered.updateProps(component, props);
+            rendered.props = props;
         } catch (e) {
             return; // Not an intermingle rendered component - silently ignore
         }

@@ -38,6 +38,7 @@ export default {
 
         return {
             componentName,
+            props,
             updateProps: renderComponent,
             cleanup: () => {
                 root.unmount();

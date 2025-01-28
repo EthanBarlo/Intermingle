@@ -21,7 +21,7 @@ type LivewireComponent = {
     shapshotEncoded: string;
 }
 
-export type Wire = {
+type Wire = {
     $parent: Wire | null;
     $el: HTMLElement;
     $id: string;
@@ -30,7 +30,7 @@ export type Wire = {
     $toggle: (key: string, live: boolean) => void;
     $call: (method: string, ...args: any[]) => Promise<any>;
     $watch: (key: string, callback: (value: any) => void) => void;
-    $refresh: () => void;
+    $refresh: () => Promise<void>;
     $commit: () => void;
     $on: (event: string, callback: (...args: any[]) => void) => void;
     $dispatch: (event: string, params: object) => void;
@@ -64,6 +64,7 @@ type Config = {
 
 type RenderedComponent = {
     componentName: string;
+    props: any;
     updateProps: (livewireComponent: LivewireComponent, props: any) => void;
     cleanup: CleanupCallback;
 }
